@@ -1,0 +1,6 @@
+*.ctb~*
+*.ctb
+*.ctx~*
+*.notes
+*.o
+

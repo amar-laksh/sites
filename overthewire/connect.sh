@@ -14,10 +14,10 @@ if   [[ $# -lt 1  ]] || [[ "$cur" -gt "$(cat $WARGAME/flags | wc -l)" ]]; then
 fi
 echo "So let's go in $WARGAME$cur... to get $WARGAME$1!"
 chmod 600 $WARGAME/*.sshkey &> /dev/null
-firefox http://overthewire.org/wargames/$WARGAME/$WARGAME$1.html
+#firefox http://overthewire.org/wargames/$WARGAME/$WARGAME$1.html
 flag=$(cat $WARGAME/flags | awk -v n=$cur 'FNR == n')
-if [[ $(echo $flag | grep -c "ssh") -eq 1 ]]; then
-	ssh $WARGAME$cur@$WARGAME.labs.overthewire.org -i "$flag" -p $PORT
-else
-	sshpass -p "$flag" ssh $WARGAME$cur@$WARGAME.labs.overthewire.org -p $PORT
-fi
+#if [[ $(echo $flag | grep -c "ssh") -eq 1 ]]; then
+#	ssh $WARGAME$cur@$WARGAME.labs.overthewire.org -i "$flag" -p $PORT
+#else
+sshpass -p "$flag" ssh $WARGAME$cur@$WARGAME.labs.overthewire.org -p $PORT
+#fi

